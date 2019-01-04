@@ -39,13 +39,17 @@ def find_magic_text(directory, ext, text, file_dict, logger):
                 for i, line in enumerate(content, 1):
                     if i > file_dict[file]:
                         if text in line:
-                            logger.info('Magic text "{}" found in file {} on line {}'.format(text, file, i))
+                            logger.info(
+                                'Magic text "{}" found in file {} on line {}'
+                                .format(text, file, i)
+                            )
                             file_dict[file] = i
         except IOError:
             logger.warn('{} file deleted from directory.'.format(file))
             files_to_del.append(file)
         except Exception as e:
-            logger.error('UnCaught exception: {}: {}'.format(type(e).__name__, e))
+            logger.error('UnCaught exception: {}: {}'
+                         .format(type(e).__name__, e))
     for file in files_to_del:
         file_dict.pop(file, None)
 
@@ -84,7 +88,6 @@ def dirwatcher(parser, logger):
     file_dict = {}
 
     while not exit_flag:
-        print(os.getcwd())
         if not os.path.isdir(directory):
             logger.warn('Directory {} does not exist!'.format(directory))
         else:
@@ -95,7 +98,8 @@ def dirwatcher(parser, logger):
                 if e.errno == os.errno.ENOENT:
                     logger.warn('Directory {} was deleted.'.format(directory))
             except Exception as e:
-                logger.error('UnCaught exception: {}: {}'.format(type(e).__name__, e))
+                logger.error('UnCaught exception: {}: {}'
+                             .format(type(e).__name__, e))
         time.sleep(interval)
 
 
@@ -129,7 +133,10 @@ def create_logger():
     logger = logging.getLogger(__file__)
     logger.setLevel(logging.DEBUG)
 
-    formatter = logging.Formatter('%(asctime)s.%(msecs)03d %(name)-12s %(levelname)-8s [%(threadName)-12s] %(message)s')
+    formatter = logging.Formatter(
+        '%(asctime)s.%(msecs)03d %(name)-12s \
+        %(levelname)-8s [%(threadName)-12s] %(message)s'
+    )
 
     file_handler = logging.FileHandler('dirwatch.log')
     file_handler.setFormatter(formatter)
